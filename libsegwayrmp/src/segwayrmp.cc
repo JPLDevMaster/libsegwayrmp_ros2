@@ -854,8 +854,8 @@ bool SegwayRMP::ParsePacket_(Packet &packet, SegwayStatus::Ptr &ss_ptr)
                               / this->mps_to_counts_;
     ss_ptr->right_wheel_speed = getShortInt(packet.data[2], packet.data[3])
                               / this->mps_to_counts_;
-    ss_ptr->yaw_rate          = getShortInt(packet.data[4], packet.data[5])
-                              / this->dps_to_counts_;
+    ss_ptr->yaw_rate = (ss_ptr->right_wheel_speed - ss_ptr->left_wheel_speed) / 0.5;
+
     ss_ptr->servo_frames      = (
                                  (((short unsigned int)packet.data[6]) << 8)
                                | ((short unsigned int)packet.data[7])
