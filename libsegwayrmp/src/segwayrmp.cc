@@ -800,7 +800,7 @@ void SegwayRMP::SetConstantsBySegwayType_(SegwayRMPType &rmp_type) {
     this->torque_to_counts_ = 1094.0;
   } else
   if (rmp_type == rmp50 || rmp_type == rmp100) {
-    int f = 2;
+    int f = 1.6;
     this->dps_to_counts_ = 7.8;
     this->mps_to_counts_ = 401.0 * f; // Scale by factor f.
     this->meters_to_counts_ = 40181.0 / f; // Scale by factor f.
