@@ -803,7 +803,7 @@ void SegwayRMP::SetConstantsBySegwayType_(SegwayRMPType &rmp_type) {
     this->dps_to_counts_ = 7.8;
 
     // Scale by factor f.
-    this->mps_to_counts_ = 401.0 * 1.43;
+    this->mps_to_counts_ = 401.0 * 1.5;
 
     // Scale by factor the odometry scaling factor.
     this->meters_to_counts_ = 40181.0 * 2;
