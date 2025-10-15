@@ -801,12 +801,8 @@ void SegwayRMP::SetConstantsBySegwayType_(SegwayRMPType &rmp_type) {
   } else
   if (rmp_type == rmp50 || rmp_type == rmp100) {
     this->dps_to_counts_ = 7.8;
-
-    // Scale by factor f.
-    this->mps_to_counts_ = 401.0 * 1.5;
-
-    // Scale by factor the odometry scaling factor.
-    this->meters_to_counts_ = 40181.0 * 2;
+    this->mps_to_counts_ = 641.6;
+    this->meters_to_counts_ = 25113.1;
     this->rev_to_counts_ = 117031.0;
     this->torque_to_counts_ = 1463.0;
   } else {
@@ -858,7 +854,8 @@ bool SegwayRMP::ParsePacket_(Packet &packet, SegwayStatus::Ptr &ss_ptr)
                               / this->mps_to_counts_;
     ss_ptr->right_wheel_speed = getShortInt(packet.data[2], packet.data[3])
                               / this->mps_to_counts_;
-    ss_ptr->yaw_rate = (ss_ptr->right_wheel_speed - ss_ptr->left_wheel_speed) / 0.5;
+    ss_ptr->yaw_rate          = getShortInt(packet.data[4], packet.data[5])
+                            / this->dps_to_counts_; 
 
     ss_ptr->servo_frames      = (
                                  (((short unsigned int)packet.data[6]) << 8)
