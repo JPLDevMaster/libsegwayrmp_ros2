@@ -803,7 +803,7 @@ void SegwayRMP::SetConstantsBySegwayType_(SegwayRMPType &rmp_type) {
     int f = 2;
     this->dps_to_counts_ = 7.8;
     this->mps_to_counts_ = 401.0 * f; // Scale by factor f.
-    this->meters_to_counts_ = 40181.0 / f; // Scale by factor f.
+    this->meters_to_counts_ = 40181.0 * f; // Scale by factor f.
     this->rev_to_counts_ = 117031.0;
     this->torque_to_counts_ = 1463.0;
   } else {
