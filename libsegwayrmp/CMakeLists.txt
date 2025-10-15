@@ -1,5 +1,5 @@
 ## Project Setup
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.22)
 
 project(libsegwayrmp VERSION 0.2.8 LANGUAGES CXX)
 
