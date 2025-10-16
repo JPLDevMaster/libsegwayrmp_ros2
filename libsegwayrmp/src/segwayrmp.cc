@@ -801,8 +801,42 @@ void SegwayRMP::SetConstantsBySegwayType_(SegwayRMPType &rmp_type) {
   } else
   if (rmp_type == rmp50 || rmp_type == rmp100) {
     this->dps_to_counts_ = 7.8;
-    this->mps_to_counts_ = 641.6;
-    this->meters_to_counts_ = 25113.1;
+
+    // TODO: Finish building tables with experiment values.
+
+    // Corrected mps_to_counts_.
+    this->mps_to_counts_ = 601.5;
+
+    /* 
+        Testing values with this mps_to_counts_ value produces the following results:
+
+        ------------------------------------------------------------------------------------------
+        | Command (m/s) | Distance Travelled (m) | Time Taken (s) | Real Velocity (m/s) | % loss |
+        |---------------|------------------------|----------------|---------------------|--------|
+        |      0.2      |         0.18           |      9.06      |        0.2          |  ~0%   |
+        |    0.205      |         0.18           |      8.75      |      0.206          |  ~0%   |
+        ------------------------------------------------------------------------------------------
+    */
+
+    // Corrected meters_to_counts_.
+    this->meters_to_counts_ = 20090.5;
+
+    /* 
+        Testing values with this meters_to_counts_ value produces the following results:
+
+        ------------------------------------------------------------------------------------------
+        | Command (m/s) | Distance Travelled (m) | Time Taken (s) |  Real Distance (m)  | % loss |
+        |---------------|------------------------|----------------|---------------------|--------|
+        |      0.2      |         0.18           |      9.06      |       0.185         |  ~2.7% |
+        |    0.205      |         0.18           |      8.75      |       0.180         |  ~0%   |
+        ------------------------------------------------------------------------------------------
+    */
+    
+    // Further experiments can be done to better refine these values.
+    // The values used here are a compromise that should work well for most applications.
+    // Please also note that these values eliminate the need for any scaling either in the driver or any other code.
+    // The point of these mmeasurements is to provide any upper-layer code with the most accurate data possible.
+
     this->rev_to_counts_ = 117031.0;
     this->torque_to_counts_ = 1463.0;
   } else {
