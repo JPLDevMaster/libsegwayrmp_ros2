@@ -52,19 +52,39 @@ These results confirm that the new constants provide accurate control and feedba
 
 ## Usage
 
-This library is intended as a drop-in replacement for the original `libsegwayrmp` within the Vizzy ROS 2 workspace.
+This library is intended as a drop-in replacement for the original `libsegwayrmp` within any ROS 2 workspace that uses the `segway_rmp_ros2` driver.
 
-1.  **Build the Library:**
-    Ensure this package is in your `src` folder and build your workspace.
+1.  **Remove Old Version (Important):**
+    Before cloning, ensure any existing `libsegwayrmp` or `libsegwayrmp_ros2` directories are removed from your workspace's `src` folder to avoid build conflicts.
     ```bash
-    cd ~/vizzy2_ws
+    # Navigate to your workspace source directory
+    cd <path_to_your_ros2_workspace>/src
+    
+    # Remove any old versions that may exist
+    rm -rf libsegwayrmp
+    rm -rf libsegwayrmp_ros2
+    ```
+
+2.  **Clone the Calibrated Library:**
+    Clone this repository into your `src` directory.
+    ```bash
+    cd <path_to_your_ros2_workspace>/src
+    git clone https://github.com/JPLDevMaster/libsegwayrmp_ros2.git
+    ```
+    *(Note: The repository is named `libsegwayrmp_ros2`, but the ROS 2 package it contains is `libsegwayrmp`.)*
+
+3.  **Build the Packages:**
+    Build the library and any packages that depend on it, such as `segway_rmp_ros2`.
+    ```bash
+    # This command rebuilds the library and ensures any dependent nodes are re-linked
     colcon build --packages-select libsegwayrmp
     ```
 
-2.  **Update High-Level Node Parameters:**
-    With the calibration now handled at the low level, the odometry scaling factors in the high-level driver are no longer needed. In your launch file for `segway_rmp_ros2`, ensure the odometry scaling is set to `1.0`.
+4.  **Update High-Level Node Parameters:**
+    With the calibration now handled at the low level, the odometry scaling factor in the high-level ROS 2 driver is no longer necessary. In your launch file for `segway_rmp_ros2`, ensure the odometry scale is set back to `1.0`.
     ```xml
     <param name="linear_odom_scale" value="1.0" />
+    <param name="angular_odom_scale" value="1.0" />
     ```
 
-This will ensure your entire stack operates with accurate, calibrated data, provided directly from the low-level controller.
+This ensures your entire stack operates with accurate, calibrated data directly from the source, eliminating the need for software workarounds.
