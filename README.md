@@ -1,9 +1,11 @@
-# Calibrated Segway RMP Library for Vizzy Robot
+# Segway RMP Library
 
 [![C++](https://img.shields.io/badge/Language-C%2B%2B-blue.svg)](https://isocpp.org/)
 [![libsegwayrmp](https://img.shields.io/badge/Library-libsegwayrmp-brightgreen)](https://github.com/segwayrmp/libsegwayrmp)
+[![Calibrated For](https://img.shields.io/badge/Calibrated%20For-RMP50%20%2F%20RMP100-9cf)](https://www.segway.com/)
 
-This repository contains a modified and calibrated version of the `libsegwayrmp` low-level driver, specifically tuned for the **Segway RMP 50/100** mobile base used by the Vizzy robot. The primary goal of this fork is to correct significant inaccuracies in velocity control and odometry reporting that were present in the original library.
+This repository contains a modified and calibrated version of the `libsegwayrmp` low-level driver, specifically tuned for the **Segway RMP 50/100** mobile base used by the Vizzy robot. 
+The primary goal of this fork is to correct significant inaccuracies in velocity control and odometry reporting that were present in the original library.
 
 ## The Problem
 
@@ -28,8 +30,8 @@ This change ensures that the angular velocity reported in odometry is accurate a
 ### 2. Linear Motion Calibration 🔧
 The core conversion constants within the library have been re-calibrated based on empirical tests. These changes ensure that both the sent motor commands and the received odometry data accurately reflect real-world motion.
 
-* **`mps_to_counts_`**: Adjusted from `401.0` to `601.5`. This corrects the mapping from meters/second to the internal velocity counts sent to the motors.
-* **`meters_to_counts_`**: Adjusted from `40181.0` to `20090.5`. This corrects the conversion from raw encoder ticks to meters for odometry.
+* **`mps_to_counts_`**: Adjusted from `401.0` to `601.5` (1.5x). This corrects the mapping from meters/second to the internal velocity counts sent to the motors.
+* **`meters_to_counts_`**: Adjusted from `40181.0` to `20090.5` (0.5x). This corrects the conversion from raw encoder ticks to meters for odometry.
 
 ### Calibration Results
 The new values were determined through systematic testing. The tables below show the performance improvements, with reported values now closely matching real-world measurements.
@@ -37,14 +39,14 @@ The new values were determined through systematic testing. The tables below show
 **Velocity Calibration (`mps_to_counts_ = 601.5`):**
 | Command (m/s) | Distance (m) | Time (s) | Real Velocity (m/s) | % Error |
 |:---:|:---:|:---:|:---:|:---:|
-| 0.20 | 1.80 | 9.06 | 0.20 | ~0% |
-| 0.21 | 1.80 | 8.75 | 0.21 | ~0% |
+| 0.200 | 1.80 | 9.06 | 0.20 | ~0% |
+| 0.205 | 1.80 | 8.75 | 0.205 | ~0% |
 
 **Odometry Calibration (`meters_to_counts_ = 20090.5`):**
 | Command (m/s) | Program Dist. (m) | Time (s) | Real Distance (m) | % Error |
 |:---:|:---:|:---:|:---:|:---:|
-| 0.20 | 1.80 | 9.06 | 1.85 | ~2.7% |
-| 0.21 | 1.80 | 8.75 | 1.80 | ~0% |
+| 0.200 | 1.80 | 9.06 | 1.85 | ~2.7% |
+| 0.205 | 1.80 | 8.75 | 1.80 | ~0% |
 
 These results confirm that the new constants provide accurate control and feedback with minimal error.
 
@@ -65,4 +67,4 @@ This library is intended as a drop-in replacement for the original `libsegwayrmp
     <param name="linear_odom_scale" value="1.0" />
     ```
 
-This will ensure your entire stack operates with accurate, calibrated data.
+This will ensure your entire stack operates with accurate, calibrated data, provided directly from the low-level controller.
