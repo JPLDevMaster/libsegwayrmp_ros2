@@ -3,7 +3,7 @@
 [![Ubuntu 22.04](https://img.shields.io/badge/Ubuntu-22.04%20LTS-orange)](https://releases.ubuntu.com/22.04/)
 [![ROS 2 Humble](https://img.shields.io/badge/ROS%202-Humble%20Hawksbill-blue)](https://docs.ros.org/en/humble/index.html)
 [![C++](https://img.shields.io/badge/Language-C%2B%2B-blue.svg)](https://isocpp.org/)
-[![Based On](https://img.shields.io/badge/Based%20On-utexas--bwi%2Fsegway__rmp__ros2-lightgrey)](https://github.com/utexas-bwi/segway_rmp_ros2)
+[![Based On](https://img.shields.io/badge/Based%20On-utexas--bwi%2Flibsegwayrmp__ros2-lightgrey)](https://github.com/utexas-bwi/libsegwayrmp_ros2)
 [![Calibrated For](https://img.shields.io/badge/Calibrated%20For-RMP50%20%2F%20RMP100-9cf)](https://www.segway.com/)
 
 This repository contains a modified and calibrated version of the `libsegwayrmp` low-level driver, specifically tuned for the **Segway RMP 50/100** mobile base used by the Vizzy robot. 
