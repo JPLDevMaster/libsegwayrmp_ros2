@@ -793,17 +793,79 @@ void SegwayRMP::StopReadingContinuously_()
 
 void SegwayRMP::SetConstantsBySegwayType_(SegwayRMPType &rmp_type) {
   if (rmp_type == rmp200 || rmp_type == rmp400) {
-    this->dps_to_counts_ = 7.8;
+    this->dps_to_counts_ = 3.84;
     this->mps_to_counts_ = 332.0;
     this->meters_to_counts_ = 33215.0;
     this->rev_to_counts_ = 112644.0;
     this->torque_to_counts_ = 1094.0;
   } else
   if (rmp_type == rmp50 || rmp_type == rmp100) {
-    this->dps_to_counts_ = 7.8;
-    this->mps_to_counts_ = 401.0;
-    this->meters_to_counts_ = 40181.0;
-    this->rev_to_counts_ = 117031.0;
+
+    this->dps_to_counts_ = 3.84;
+
+    /* 
+        Testing values with this dps_to_counts_ value produces the following results:
+
+        ---------------------------------------------------------------------------------------------------------------
+        | Command (rad/s) | Angle Rotated (deg) | Time Taken (s) | Expected Time (s) | Real Velocity (rad/s) | % loss |
+        |-----------------|---------------------|----------------|-------------------|-----------------------|--------|
+        |      0.2        |         360         |      32.6      |        31.4       |          0.19         |  5.00  |
+        |     0.35        |         360         |      18.3      |        18.0       |          0.34         |  2.86  |
+        |     0.5         |         360         |      12.1      |        12.6       |          0.52         | -4.00  |
+        ---------------------------------------------------------------------------------------------------------------
+    */
+
+    // Corrected mps_to_counts_.
+    this->mps_to_counts_ = 601.5;
+
+    /* 
+        Testing values with this mps_to_counts_ value produces the following results:
+
+        ------------------------------------------------------------------------------------------
+        | Command (m/s) | Distance Travelled (m) | Time Taken (s) | Real Velocity (m/s) | % loss |
+        |---------------|------------------------|----------------|---------------------|--------|
+        |    0.200      |         1.80           |      9.06      |        0.2          |   ~0   |
+        |    0.205      |         1.80           |      8.75      |      0.206          |   ~0   |
+        |    0.350      |         1.80           |      4.91      |      0.367          | -4.86  |
+        |    0.500      |         1.80           |      3.61      |      0.499          |   ~0   |
+        ------------------------------------------------------------------------------------------
+    */
+
+    // Corrected meters_to_counts_.
+    this->meters_to_counts_ = 20090.5;
+
+    /* 
+        Testing values with this meters_to_counts_ value produces the following results:
+
+        ------------------------------------------------------------------------------------------
+        | Command (m/s) | Distance Travelled (m) | Time Taken (s) |  Odometry Data (m)  | % loss |
+        |---------------|------------------------|----------------|---------------------|--------|
+        |      0.2      |         1.80           |      9.06      |       1.85          | ~2.70  |
+        |    0.205      |         1.80           |      8.75      |       1.80          |   ~0   |
+        |    0.350      |         1.80           |      4.91      |      1.866          | −3.67  |
+        |    0.500      |         1.80           |      3.61      |      1.896          |  5.33  |
+        ------------------------------------------------------------------------------------------
+    */
+
+    this->rev_to_counts_ = 61900;
+
+    /* 
+        Testing values with this rev_to_counts_ value produces the following results:
+
+        --------------------------------------------------
+        | Command (rad/s) | Angle Rotated (deg) | % loss |
+        |-----------------|---------------------|--------|
+        |      0.2        |         360         | 16.45  |
+        |     0.35        |         360         | -9.61  |
+        |      0.5        |         360         |   ~0   |
+        --------------------------------------------------
+
+        Further experiments can be done to better refine these values.
+        The values used here are a compromise that should work well for most applications.
+        Please also note that these values eliminate the need for any scaling either in the driver or any other code.
+        The point of these mmeasurements is to provide any upper-layer code with the most accurate data possible.
+    */
+
     this->torque_to_counts_ = 1463.0;
   } else {
     RMP_THROW_MSG(ConfigurationException, "Invalid Segway RMP Type");
@@ -854,7 +916,8 @@ bool SegwayRMP::ParsePacket_(Packet &packet, SegwayStatus::Ptr &ss_ptr)
                               / this->mps_to_counts_;
     ss_ptr->right_wheel_speed = getShortInt(packet.data[2], packet.data[3])
                               / this->mps_to_counts_;
-    ss_ptr->yaw_rate = (ss_ptr->right_wheel_speed - ss_ptr->left_wheel_speed) / 0.5;
+    ss_ptr->yaw_rate          = getShortInt(packet.data[4], packet.data[5])
+                            / this->dps_to_counts_; 
 
     ss_ptr->servo_frames      = (
                                  (((short unsigned int)packet.data[6]) << 8)
