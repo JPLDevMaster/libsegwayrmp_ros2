@@ -793,7 +793,7 @@ void SegwayRMP::StopReadingContinuously_()
 
 void SegwayRMP::SetConstantsBySegwayType_(SegwayRMPType &rmp_type) {
   if (rmp_type == rmp200 || rmp_type == rmp400) {
-    this->dps_to_counts_ = 3.84;
+    this->dps_to_counts_ = 7.8;
     this->mps_to_counts_ = 332.0;
     this->meters_to_counts_ = 33215.0;
     this->rev_to_counts_ = 112644.0;
